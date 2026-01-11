@@ -23,6 +23,26 @@ resource "kind_cluster" "default" {
         container_port = 443
         host_port      = 443
       }
+      # Expose Vote App
+      extra_port_mappings {
+        container_port = 31000
+        host_port      = 31000
+      }
+      # Expose Result App
+      extra_port_mappings {
+        container_port = 31001
+        host_port      = 31001
+      }
+      # Expose Grafana (NodePort)
+      extra_port_mappings {
+        container_port = 31002
+        host_port      = 31002
+      }
+      # Expose Grafana (Forwarded) - Optional
+      extra_port_mappings {
+        container_port = 3000
+        host_port      = 3000
+      }
     }
     
     # Removed worker nodes to save RAM (12GB Host optimized)
