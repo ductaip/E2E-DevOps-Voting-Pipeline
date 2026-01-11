@@ -4,3 +4,21 @@ bin/
 obj/
 .vs/
 node_modules/
+__pycache__/
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Key files (just in case)
+*.pem
+*.key
