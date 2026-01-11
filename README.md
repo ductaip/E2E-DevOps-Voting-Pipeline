@@ -93,6 +93,9 @@ chmod +x monitoring/install.sh
 ./monitoring/install.sh
 ```
 *Access Grafana at `http://localhost:3000` (User: `admin`, Pass: `admin`)*
- 
+<img width="1669" height="925" alt="image" src="https://github.com/user-attachments/assets/61bc02cd-abfd-41d5-aa18-e48a8e54e54f" />
+
+ <img width="1665" height="937" alt="image" src="https://github.com/user-attachments/assets/a67be4c6-78de-49d2-ae5a-15e9150acea3" />
+
 --- 
 **Capstone Team**: [Duc Tai Phan]
