@@ -1,0 +1,24 @@
+{{- $root := . -}}
+{{- range $name, $config := .Values.services }}
+{{- if and (kindIs "map" $config) $config.service }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "voting-app.fullname" $root }}-{{ $name }}
+  labels:
+    {{- include "voting-app.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $name }}
+spec:
+  type: {{ $config.service.type }}
+  ports:
+    - port: {{ $config.service.port }}
+      targetPort: {{ $config.service.targetPort | default 80 }}
+      nodePort: {{ $config.service.nodePort }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "voting-app.selectorLabels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $name }}
+{{- end }}
+{{- end }}

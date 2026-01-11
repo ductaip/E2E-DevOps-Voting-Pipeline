@@ -1,0 +1,20 @@
+{{- $root := . -}}
+{{- range $key, $config := .Values.infrastructure }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "voting-app.fullname" $root }}-{{ $config.name }}
+  labels:
+    {{- include "voting-app.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $config.name }}
+spec:
+  ports:
+    - port: {{ $config.service.port }}
+      targetPort: {{ $config.service.port }}
+      protocol: TCP
+      name: available
+  selector:
+    {{- include "voting-app.selectorLabels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $config.name }}
+{{- end }}
