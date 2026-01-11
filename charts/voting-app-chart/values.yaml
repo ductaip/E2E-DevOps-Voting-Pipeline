@@ -1,0 +1,92 @@
+# Default values for voting-app-chart.
+
+infrastructure:
+  postgres:
+    name: db
+    image: postgres:15-alpine
+    username: postgres
+    # password passed via secret
+    volumeSize: 1Gi
+    service:
+      port: 5432
+  
+  redis:
+    name: redis
+    image: redis:alpine
+    service:
+      port: 6379
+
+services:
+  vote:
+    image: vote
+    tag: latest
+    replicaCount: 2
+    service:
+      type: NodePort
+      port: 80
+      targetPort: 8080
+      nodePort: 31000
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 20
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    env: []
+
+  result:
+    image: result
+    tag: latest
+    replicaCount: 1
+    service:
+      type: NodePort
+      port: 80
+      targetPort: 8080
+      nodePort: 31001
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    livenessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      initialDelaySeconds: 15
+      periodSeconds: 20
+    readinessProbe:
+      httpGet:
+        path: /
+        port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 10
+    env: []
+
+  worker:
+    image: worker
+    tag: latest
+    replicaCount: 1
+    resources:
+      limits:
+        cpu: 200m
+        memory: 256Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+    env:
+    env: []
