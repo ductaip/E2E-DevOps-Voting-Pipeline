@@ -1,0 +1,59 @@
+{{- $root := . -}}
+{{- range $name, $config := .Values.services }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "voting-app.fullname" $root }}-{{ $name }}
+  labels:
+    {{- include "voting-app.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $name }}
+spec:
+  replicas: {{ $config.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "voting-app.selectorLabels" $root | nindent 6 }}
+      app.kubernetes.io/component: {{ $name }}
+  template:
+    metadata:
+      labels:
+        {{- include "voting-app.selectorLabels" $root | nindent 8 }}
+        app.kubernetes.io/component: {{ $name }}
+    spec:
+      containers:
+        - name: {{ $name }}
+          image: "{{ $config.image }}:{{ $config.tag | default "latest" }}"
+          imagePullPolicy: IfNotPresent
+          {{- if $config.service }}
+          ports:
+            - name: http
+              containerPort: {{ $config.service.targetPort | default 80 }}
+              protocol: TCP
+          {{- end }}
+          env:
+            {{- range $config.env }}
+            - name: {{ .name }}
+              value: {{ tpl .value $root | quote }}
+            {{- end }}
+            - name: POSTGRES_HOST
+              value: {{ include "voting-app.fullname" $root }}-db
+            - name: REDIS_HOST
+              value: {{ include "voting-app.fullname" $root }}-redis
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "voting-app.fullname" $root }}-db-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              value: "postgres" # Demo simplification
+          resources:
+            {{- toYaml ($config.resources | default dict) | nindent 12 }}
+          {{- if $config.livenessProbe }}
+          livenessProbe:
+            {{- toYaml $config.livenessProbe | nindent 12 }}
+          {{- end }}
+          {{- if $config.readinessProbe }}
+          readinessProbe:
+            {{- toYaml $config.readinessProbe | nindent 12 }}
+          {{- end }}
+{{- end }}

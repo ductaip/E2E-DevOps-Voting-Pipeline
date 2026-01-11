@@ -1,0 +1,47 @@
+{{- $root := . -}}
+{{- range $key, $config := .Values.infrastructure }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "voting-app.fullname" $root }}-{{ $config.name }}
+  labels:
+    {{- include "voting-app.labels" $root | nindent 4 }}
+    app.kubernetes.io/component: {{ $config.name }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "voting-app.selectorLabels" $root | nindent 6 }}
+      app.kubernetes.io/component: {{ $config.name }}
+  template:
+    metadata:
+      labels:
+        {{- include "voting-app.selectorLabels" $root | nindent 8 }}
+        app.kubernetes.io/component: {{ $config.name }}
+    spec:
+      containers:
+        - name: {{ $config.name }}
+          image: "{{ $config.image }}"
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: {{ $config.service.port }}
+          {{- if eq $key "postgres" }}
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: {{ include "voting-app.fullname" $root }}-db-config
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              value: "postgres"
+          volumeMounts:
+            - name: db-data
+              mountPath: /var/lib/postgresql/data
+          {{- end }}
+      {{- if eq $key "postgres" }}
+      volumes:
+        - name: db-data
+          emptyDir: {} # For Kind/Demo, use emptyDir or PVC
+      {{- end }}
+{{- end }}

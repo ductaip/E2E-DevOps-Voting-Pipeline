@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "voting-app.fullname" . }}-db-config
+data:
+  POSTGRES_USER: {{ .Values.infrastructure.postgres.username | quote }}
+  POSTGRES_DB: "postgres"
+  POSTGRES_HOST: "db"
