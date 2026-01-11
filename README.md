@@ -93,16 +93,6 @@ chmod +x monitoring/install.sh
 ./monitoring/install.sh
 ```
 *Access Grafana at `http://localhost:3000` (User: `admin`, Pass: `admin`)*
-
-## 📸 Screenshots
-
-| Jenkins Pipeline | Grafana Dashboard |
-|:---:|:---:|
-| ![Jenkins Pipeline](https://placehold.co/600x400?text=Jenkins+CI/CD+Visualization) | ![Grafana](https://placehold.co/600x400?text=Grafana+Metrics+Dashboard) |
-
-| Voting Interface | Result Interface |
-|:---:|:---:|
-| ![Vote UI](https://placehold.co/600x400?text=Python+Vote+App+UI) | ![Result UI](https://placehold.co/600x400?text=Node.js+Result+UI) |
-
----
+ 
+--- 
 **Capstone Team**: [Duc Tai Phan]
